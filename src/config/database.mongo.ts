@@ -1,7 +1,8 @@
 import { config } from './key';
 
-export const mongoConfig = {
-  uri: config.MONGODB.URI,
+export const mongoUri = config.MONGODB.URI;
+
+export const mongoOptions = {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 };

@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { MongooseModule } from '@nestjs/mongoose';
 import { typeOrmConfig } from './config/database.orm';
-import {  mongoConfig } from './config/database.mongo';
+import {  mongoOptions, mongoUri  } from './config/database.mongo';
 
 // Módulos funcionales
 import { UsersModule } from './users/users.module';
@@ -22,7 +22,7 @@ import { AuthModule } from './auth/auth.module';
 @Module({
   imports: [
     TypeOrmModule.forRoot(typeOrmConfig),
-    MongooseModule.forRoot(mongoConfig.uri, mongoConfig),
+    MongooseModule.forRoot(mongoUri),
 
 
 

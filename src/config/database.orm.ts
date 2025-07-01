@@ -35,4 +35,5 @@ export const typeOrmConfig: TypeOrmModuleOptions = {
     Appointment,
   ],
   synchronize: true,
+  
 };
