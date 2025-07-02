@@ -1,24 +1,33 @@
-import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
-import { ManyToOne, JoinColumn } from "typeorm";
+import { Entity, Column, ManyToOne, JoinColumn, OneToMany } from "typeorm";
 import { ServiceCategory } from "./serviceCategory.entity";
+import { ServicePetType } from "./ServicePetType.entity";
+import { Appointment } from "./appointment.entity";
 import { BaseEntity } from "./BaseEntity";
 
-// Service.ts
-@Entity()
+@Entity('services')
 export class Service extends BaseEntity {
-  @Column()
+  @Column({ length: 150 })
   nombre: string;
 
-  @Column()
+  @Column('text')
   descripcion: string;
 
-  @Column('float')
+  @Column('decimal', { precision: 10, scale: 2 })
   precio: number;
 
-  @Column()
-  imagen: string;
+  @Column({ length: 255, nullable: true })
+  imagen?: string;
 
-  @ManyToOne(() => ServiceCategory)
-  @JoinColumn()
+  @Column('int', { default: 60 })
+  duracionMinutos: number;
+
+  @ManyToOne(() => ServiceCategory, category => category.servicios)
+  @JoinColumn({ name: 'categoria_id' })
   categoria: ServiceCategory;
+
+  @OneToMany(() => ServicePetType, servicePetType => servicePetType.service)
+  tiposMascota?: ServicePetType[];
+
+  @OneToMany(() => Appointment, appointment => appointment.servicio)
+  citas?: Appointment[];
 }

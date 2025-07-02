@@ -1,34 +1,62 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Param,
+  Patch,
+  Delete,
+  UseGuards,
+  Request,
+} from '@nestjs/common';
 import { AppointmentStatusesService } from './appointment-statuses.service';
 import { CreateAppointmentStatusDto } from './dto/create-appointment-status.dto';
 import { UpdateAppointmentStatusDto } from './dto/update-appointment-status.dto';
+import { AppointmentStatus } from '../models/entities/appointmentStatus.entity';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { RolesGuard } from '../auth/guards/roles.guard';
+import { Roles } from '../auth/decorators/roles.decorator';
 
 @Controller('appointment-statuses')
+@UseGuards(JwtAuthGuard, RolesGuard)
 export class AppointmentStatusesController {
   constructor(private readonly appointmentStatusesService: AppointmentStatusesService) {}
 
   @Post()
-  create(@Body() createAppointmentStatusDto: CreateAppointmentStatusDto) {
+  @Roles('ADMIN')
+  async create(@Body() createAppointmentStatusDto: CreateAppointmentStatusDto): Promise<AppointmentStatus> {
     return this.appointmentStatusesService.create(createAppointmentStatusDto);
   }
 
   @Get()
-  findAll() {
+  async findAll(): Promise<AppointmentStatus[]> {
     return this.appointmentStatusesService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.appointmentStatusesService.findOne(+id);
+  async findOne(@Param('id') id: number): Promise<AppointmentStatus> {
+    return this.appointmentStatusesService.findOne(id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateAppointmentStatusDto: UpdateAppointmentStatusDto) {
-    return this.appointmentStatusesService.update(+id, updateAppointmentStatusDto);
+  @Roles('ADMIN')
+  async update(
+    @Param('id') id: number,
+    @Body() updateAppointmentStatusDto: UpdateAppointmentStatusDto,
+  ): Promise<AppointmentStatus> {
+    return this.appointmentStatusesService.update(id, updateAppointmentStatusDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.appointmentStatusesService.remove(+id);
+  @Roles('ADMIN')
+  async remove(@Param('id') id: number): Promise<void> {
+    return this.appointmentStatusesService.remove(id);
+  }
+
+  @Post('seed')
+  @Roles('ADMIN')
+  async seedDefaultStatuses(): Promise<{ message: string }> {
+    await this.appointmentStatusesService.seedDefaultStatuses();
+    return { message: 'Estados de cita por defecto creados exitosamente' };
   }
 }
