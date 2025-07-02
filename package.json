@@ -20,6 +20,7 @@
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "seed": "ts-node src/scripts/seed-initial-data.ts",
     "seed-service": "ts-node src/scripts/seed.ts",
+    "seed-prod": "ts-node src/scripts/seed-products-complete.ts",
     "seed:dev": "npm run seed"
   },
   "dependencies": {
